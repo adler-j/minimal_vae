@@ -34,8 +34,9 @@ with tf.variable_scope('decoder'):
     x = layers.conv2d_transpose(x, num_outputs=128, kernel_size=5, stride=2)
     x = layers.conv2d_transpose(x, num_outputs=64, kernel_size=5, stride=2)
     x = layers.conv2d_transpose(x, num_outputs=1, kernel_size=5, stride=2,
-                                activation_fn=tf.nn.sigmoid)
-    reconstruction = x[:, 2:-2, 2:-2, :]
+                                activation_fn=None)
+    logits = x[:, 2:-2, 2:-2, :]
+    reconstruction = tf.nn.sigmoid(logits)
 
 with tf.name_scope('loss'):
     latent_losses = 0.5 * tf.reduce_sum(tf.square(mu) +
@@ -43,12 +44,13 @@ with tf.name_scope('loss'):
                                         tf.log(tf.square(sigma)) - 1,
                                         axis=1)
 
-    reconstruction_losses = tf.reduce_sum(tf.square(x_true - reconstruction),
-                                          axis=[1, 2, 3])
+    reconstruction_losses = tf.reduce_sum(
+        tf.nn.sigmoid_cross_entropy_with_logits(labels=x_true, logits=logits),
+        axis=[1, 2, 3])
     loss = tf.reduce_mean(reconstruction_losses + latent_losses)
 
 with tf.name_scope('optimizer'):
-    optimizer = tf.train.AdamOptimizer(learning_rate=1e-4)
+    optimizer = tf.train.AdamOptimizer(learning_rate=1e-3)
     train = optimizer.minimize(loss)
 
 tf.global_variables_initializer().run()

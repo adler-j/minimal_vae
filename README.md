@@ -5,7 +5,7 @@ This is a minimal implementation of an Variational Auto-Encoder in Tensorflow ap
 
 Some example generated numbers:
 
-![VAE results](https://user-images.githubusercontent.com/2202312/41587003-6d729754-73ae-11e8-9469-bbac3f9f560b.png)
+![VAE results](https://user-images.githubusercontent.com/2202312/41727363-75961a06-7574-11e8-92b6-849efaa7f9c4.png)
 
 How to run
 ----------
