@@ -14,7 +14,7 @@ with tf.name_scope('placeholders'):
     x_true = tf.placeholder(tf.float32, [None, 28, 28, 1])
     z = tf.placeholder(tf.float32, [None, 128])
 
-with tf.variable_scope('encoder'):
+with tf.name_scope('encoder'):
     x = layers.conv2d(x_true, num_outputs=64, kernel_size=5, stride=2)
     x = layers.conv2d(x, num_outputs=128, kernel_size=5, stride=2)
     x = layers.conv2d(x, num_outputs=256, kernel_size=5, stride=2)
@@ -24,10 +24,10 @@ with tf.variable_scope('encoder'):
     logsigma = layers.fully_connected(x, num_outputs=128, activation_fn=None)
     sigma = tf.exp(logsigma)
 
-with tf.variable_scope('latent_variable'):
+with tf.name_scope('latent_variable'):
     z = mu + tf.random_normal(tf.shape(sigma)) * sigma
 
-with tf.variable_scope('decoder'):
+with tf.name_scope('decoder'):
     x = layers.fully_connected(z, num_outputs=4096)
     x = tf.reshape(x, [-1, 4, 4, 256])
 
